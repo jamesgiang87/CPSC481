@@ -44,8 +44,21 @@ class Game:
                 if hits:
                     self.player.pos.y = hits[0].rect.top
                     self.player.vel.y = 0
+            #if player is 2/3 of the screen
+            if self.player.rect.right <= width / 3:
+                self.player.pos.x -= abs(self.player.vel.x)
+                for plat in self . platforms:
+                    plat.rect.x -= abs(self.player.vel.x)
+                    if plat.rect.right >= width:
+                        plat.kill()
 
-            pass
+            # spawn new platformList
+            while len(self.platforms) < 6:
+                widthPos = random.randrange(50, 100)
+                p = Platform(random.randrange(0, width - widthPos),
+                random.randrange(20, 30), widthPos, 20)
+                self.platforms.add(p)
+                self.allObjects.add(p)
 
         def events(self):
             #events

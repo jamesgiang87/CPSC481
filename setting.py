@@ -10,7 +10,7 @@ playerAcc = 0.5
 playerFrict = -0.12
 playerGrav = 0.8
 
-#platforms in a list
+#platforms in a listt
 platformList = [(0, height - 40, width, 40),(width / 2 - 50, height * 3 / 4, 100, 20),
                 (125,height - 300, 100, 20),
                 (350, 200, 100, 20),
