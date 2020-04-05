@@ -22,6 +22,10 @@ class Player(rg.sprite.Sprite):
         self.rect.x -= 1
         if hits:
             self.vel.y = -20
+        hits = rg.sprite.spritecollide(self, self.game.ground,False)
+        self.rect.x -= 1
+        if hits:
+            self.vel.y = -20
 
     def update(self):
         self.acc = vec(0, playerGrav)
@@ -35,15 +39,29 @@ class Player(rg.sprite.Sprite):
         self.acc.x += self.vel.x * playerFrict
         self.vel += self.acc
         self.pos += self.vel + 0.5 * self.acc
-        #wrap screen
+        #end of screen
         if self.pos.x > width:
             self.pos.x = 0
         if self.pos.x < 0:
-            self.pos.x = width
+            self.pos.x = 0
         self.rect.midbottom = self.pos
 
+    def attack(self):
+        atk = rg.sprite.spritecollide(self, self.game.enemy,False)
+        if keys[rg.K_A]:
+            self.acc.x = -playerAcc
+
+class Ground(rg.sprite.Sprite):
+    def __init__ (self, x, y, w, h):
+        rg.sprite.Sprite.__init__(self)
+        self.image = rg.Surface((w,h))
+        self.image.fill(lime)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
 class Platform(rg.sprite.Sprite):
-    def __init__ (self, x, y, w, h,):
+    def __init__ (self, x, y, w, h):
         rg.sprite.Sprite.__init__(self)
         self.image = rg.Surface((w,h))
         self.image.fill(white)

@@ -20,6 +20,12 @@ class Game:
             self.platforms = rg.sprite.Group()
             self.player = Player(self)
             self.allObjects.add(self.player)
+            self.ground = rg.sprite.Group()
+            self.allObjects.add(self.ground)
+            for floor in floorList:
+                f = Ground(*floor)
+                self.allObjects.add(f)
+                self.ground.add(f)
             for plat in platformList:
                 p = Platform(*plat)
                 self.allObjects.add(p)
@@ -38,27 +44,43 @@ class Game:
         def update(self):
             #update game
             self.allObjects.update()
+
+            #chech if player is on ground
+            if self.player.vel.y > 0:
+                hits = rg.sprite.spritecollide(self.player,self.ground,False)
+                if hits:
+                    self.player.pos.y = hits[0].rect.top
+                    self.player.vel.y = 0
+
             #check if player is falling onto platform
             if self.player.vel.y > 0:
                 hits = rg.sprite.spritecollide(self.player,self.platforms,False)
                 if hits:
                     self.player.pos.y = hits[0].rect.top
                     self.player.vel.y = 0
-            #if player is 2/3 of the screen
-            if self.player.rect.right <= width / 3:
-                self.player.pos.x -= abs(self.player.vel.x)
-                for plat in self . platforms:
-                    plat.rect.x -= abs(self.player.vel.x)
-                    if plat.rect.right >= width:
+
+            #if player is edge of the screen remove platform
+            if self.player.rect.right > width:
+                self.player.pos.x += abs(self.player.vel.x)
+                for plat in self.platforms:
+                    plat.rect.x += abs(self.player.vel.x)
+                    if plat.rect.right <= width:
                         plat.kill()
+                        print('kill')
+
 
             # spawn new platformList
-            while len(self.platforms) < 6:
-                widthPos = random.randrange(50, 100)
-                p = Platform(random.randrange(0, width - widthPos),
-                random.randrange(20, 30), widthPos, 20)
+            while len(self.platforms) < 4:
+                newWidthSize = random.randrange(100, 200)
+                p = Platform(random.randrange( 300, height - 40),
+                random.randrange(0, width ), newWidthSize, 20)
                 self.platforms.add(p)
                 self.allObjects.add(p)
+                print('add plat')
+
+
+
+
 
         def events(self):
             #events
