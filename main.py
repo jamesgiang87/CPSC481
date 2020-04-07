@@ -20,6 +20,8 @@ class Game:
             self.platforms = rg.sprite.Group()
             self.player = Player(self)
             self.allObjects.add(self.player)
+            self.enemy = Enemy(self)
+            self.allObjects.add(self.enemy)
             self.ground = rg.sprite.Group()
             self.allObjects.add(self.ground)
             for floor in floorList:
@@ -68,6 +70,19 @@ class Game:
                         plat.kill()
                         print('kill')
 
+            #chech if player is on ground
+            if self.enemy.vel.y > 0:
+                hits = rg.sprite.spritecollide(self.enemy,self.ground,False)
+                if hits:
+                    self.enemy.pos.y = hits[0].rect.top
+                    self.enemy.vel.y = 0
+
+            #check if player is falling onto platform
+            if self.enemy.vel.y > 0:
+                hits = rg.sprite.spritecollide(self.player,self.platforms,False)
+                if hits:
+                    self.enemy.pos.y = hits[0].rect.top
+                    self.enemy.vel.y = 0
 
             # spawn new platformList
             while len(self.platforms) < 4:
