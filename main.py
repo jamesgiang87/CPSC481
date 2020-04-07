@@ -5,6 +5,7 @@ import os
 from setting import *
 from spires import *
 
+#game
 class Game:
         def __init__(self):
             #init pygame and game window
