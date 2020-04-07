@@ -4,11 +4,8 @@ import random
 import os
 from setting import *
 from spires import *
-<<<<<<< HEAD
 from platforms import *
 
-=======
->>>>>>> d18ccc3b6137648ed76eeea5ad917f17c097fb13
 
 class Game:
         def __init__(self):
@@ -19,21 +16,6 @@ class Game:
             rg.display.set_caption("game")
             self.clock = rg.time.Clock()
             self.running = True
-<<<<<<< HEAD
-            self.allObjects = rg.sprite.Group()
-            self.walls = rg.sprite.Group()
-            self.player = Player(self)
-            self.playing = True
-
-        def new(self):
-            self.allObjects.empty()
-            self.walls.empty()
-            self.player = Player(self)
-            self.allObjects.add(self.player)
-            self.addwall(Wall(self, 400, 550, 800, 100))
-            self.addwall(Wall(self, 650, 450, 300, 100))
-            self.addwall(Wall(self, 300, 250, 200, 50))
-=======
 
         def new(self):
             self.allObjects = rg.sprite.Group()
@@ -52,7 +34,6 @@ class Game:
                 p = Platform(*plat)
                 self.allObjects.add(p)
                 self.platforms.add(p)
->>>>>>> d18ccc3b6137648ed76eeea5ad917f17c097fb13
             self.run()
 
         def run(self):
@@ -68,59 +49,7 @@ class Game:
             #update game
             self.allObjects.update()
 
-<<<<<<< HEAD
             pass
-=======
-            #chech if player is on ground
-            if self.player.vel.y > 0:
-                hits = rg.sprite.spritecollide(self.player,self.ground,False)
-                if hits:
-                    self.player.pos.y = hits[0].rect.top
-                    self.player.vel.y = 0
-
-            #check if player is falling onto platform
-            if self.player.vel.y > 0:
-                hits = rg.sprite.spritecollide(self.player,self.platforms,False)
-                if hits:
-                    self.player.pos.y = hits[0].rect.top
-                    self.player.vel.y = 0
-
-            #if player is edge of the screen remove platform
-            if self.player.rect.right > width:
-                self.player.pos.x += abs(self.player.vel.x)
-                for plat in self.platforms:
-                    plat.rect.x += abs(self.player.vel.x)
-                    if plat.rect.right <= width:
-                        plat.kill()
-                        print('kill')
-
-            #chech if player is on ground
-            if self.enemy.vel.y > 0:
-                hits = rg.sprite.spritecollide(self.enemy,self.ground,False)
-                if hits:
-                    self.enemy.pos.y = hits[0].rect.top
-                    self.enemy.vel.y = 0
-
-            #check if player is falling onto platform
-            if self.enemy.vel.y > 0:
-                hits = rg.sprite.spritecollide(self.player,self.platforms,False)
-                if hits:
-                    self.enemy.pos.y = hits[0].rect.top
-                    self.enemy.vel.y = 0
-
-            # spawn new platformList
-            while len(self.platforms) < 4:
-                newWidthSize = random.randrange(100, 200)
-                p = Platform(random.randrange( 300, height - 40),
-                random.randrange(0, width ), newWidthSize, 20)
-                self.platforms.add(p)
-                self.allObjects.add(p)
-                print('add plat')
-
-
-
-
->>>>>>> d18ccc3b6137648ed76eeea5ad917f17c097fb13
 
         def events(self):
             #events
@@ -130,12 +59,6 @@ class Game:
                     if self.playing:
                         self.playing = False
                     self.running = False
-<<<<<<< HEAD
-=======
-                if event.type == rg.KEYDOWN:
-                    if event.key == rg.K_SPACE:
-                        self.player.jump()
->>>>>>> d18ccc3b6137648ed76eeea5ad917f17c097fb13
 
             pass
 
@@ -156,13 +79,9 @@ class Game:
             #game over retry
             pass
 
-<<<<<<< HEAD
         def addwall(self, wall):
             self.allObjects.add(wall)
             self.walls.add(wall)
-=======
-
->>>>>>> d18ccc3b6137648ed76eeea5ad917f17c097fb13
 
 g = Game()
 g.startScreen()
