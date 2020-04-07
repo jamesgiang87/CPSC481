@@ -4,6 +4,8 @@ import random
 import os
 from setting import *
 from spires import *
+from platforms import *
+
 
 class Game:
         def __init__(self):
@@ -14,11 +16,19 @@ class Game:
             rg.display.set_caption("game")
             self.clock = rg.time.Clock()
             self.running = True
+            self.allObjects = rg.sprite.Group()
+            self.walls = rg.sprite.Group()
+            self.player = Player(self)
+            self.playing = True
 
         def new(self):
-            self.allObjects = rg.sprite.Group()
-            self.player = Player()
+            self.allObjects.empty()
+            self.walls.empty()
+            self.player = Player(self)
             self.allObjects.add(self.player)
+            self.addwall(Wall(self, 400, 550, 800, 100))
+            self.addwall(Wall(self, 650, 450, 300, 100))
+            self.addwall(Wall(self, 300, 250, 200, 50))
             self.run()
 
         def run(self):
@@ -64,7 +74,9 @@ class Game:
             #game over retry
             pass
 
-
+        def addwall(self, wall):
+            self.allObjects.add(wall)
+            self.walls.add(wall)
 
 g = Game()
 g.startScreen()
