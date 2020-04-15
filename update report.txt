@@ -1,0 +1,36 @@
+I have issues of finding spirites that would work for the game. I havent dealt with sprites or sprite animation that took up my majority of the time
+
+link to sprite
+opengameart.org
+Links of spritesheet creation
+https://www.codeandweb.com/free-sprite-sheet-packer this was very hard 
+to find unless i made my own spritesheet and manually figuring out the 
+position of the spirites
+
+
+
+completed
+player spirites
+sprities animation
+game screen
+score count need enemy kills to increment
+
+working:
+player animation:
+jumping, moving left or right, and attacking 
+wolf animation
+moving left or right, and attacking 
+partial working 
+
+
+
+
+Pending
+gameover screen
+Player attack need to know which side is facing L/R when attacking
+enemy class is half filled out
+enemy movement and attacking
+enemy respawn
+Need colliosion dection for attacking enemy or player
+game end with 20 kills from player of if enemy lands a successful attack 
+on player
