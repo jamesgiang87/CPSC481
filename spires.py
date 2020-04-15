@@ -159,6 +159,8 @@ class Player(rg.sprite.Sprite):
 ################################################################################
         #attacking
         #Stuck here for trying to get player position to attack the left or right.
+        #as of now you have to hold down A for the animation to complete
+        #if you hold A and dont move it will default attacking right even though player was moving to the left
 ################################################################################
 
         keys = rg.key.get_pressed()
