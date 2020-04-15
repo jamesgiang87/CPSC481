@@ -7,6 +7,11 @@ width = 1000
 
 fps = 60
 
+#font
+fontType ="arial"
+
+#images
+spritesheet1 = "spritesheet.png"
 #player movement
 playerAcc = 1
 playerFrict = -0.12
@@ -33,3 +38,4 @@ white = (255,255,255)
 enemyCol = (255,0,0)
 yellow = (255,255,0)
 lime = (0,255,0)
+bgColor = (0,255,255)

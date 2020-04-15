@@ -4,6 +4,8 @@ import random
 import os
 from setting import *
 from spires import *
+from os import path
+
 
 #game
 class Game:
@@ -15,14 +17,25 @@ class Game:
             rg.display.set_caption("game")
             self.clock = rg.time.Clock()
             self.running = True
+            self.fontName = rg.font.match_font(fontType)
+            self.loadData()
+
+        def loadData(self):
+            self.dir = path.dirname(__file__)
+            imgDir = path.join(self.dir, 'img')
+            #load image
+            self.spritesheet = SpriteSheet(path.join(imgDir, spritesheet1))
+
+
 
         def new(self):
+            self.score = 0
             self.allObjects = rg.sprite.Group()
             self.platforms = rg.sprite.Group()
             self.player = Player(self)
             self.allObjects.add(self.player)
-            self.enemy = Enemy(self)
-            self.allObjects.add(self.enemy)
+            self.enemy = rg.sprite.Group()
+            #self.allObjects.add(self.enemy)
             self.ground = rg.sprite.Group()
             self.allObjects.add(self.ground)
             for floor in floorList:
@@ -43,6 +56,7 @@ class Game:
                 self.events()
                 self.update()
                 self.draw()
+
 
         def update(self):
             #update game
@@ -71,22 +85,8 @@ class Game:
                         plat.kill()
                         print('kill')
 
-            #chech if player is on ground
-            if self.enemy.vel.y > 0:
-                hits = rg.sprite.spritecollide(self.enemy,self.ground,False)
-                if hits:
-                    self.enemy.pos.y = hits[0].rect.top
-                    self.enemy.vel.y = 0
-
-            #check if player is falling onto platform
-            if self.enemy.vel.y > 0:
-                hits = rg.sprite.spritecollide(self.player,self.platforms,False)
-                if hits:
-                    self.enemy.pos.y = hits[0].rect.top
-                    self.enemy.vel.y = 0
-
             # spawn new platformList
-            while len(self.platforms) < 4:
+            while len(self.platforms) < 5:
                 newWidthSize = random.randrange(100, 200)
                 p = Platform(random.randrange( 300, height - 40),
                 random.randrange(0, width ), newWidthSize, 20)
@@ -94,9 +94,9 @@ class Game:
                 self.allObjects.add(p)
                 print('add plat')
 
-
-
-
+            #player dead
+            if self.player.rect.bottom > height:
+                self.playing = False
 
         def events(self):
             #events
@@ -110,12 +110,13 @@ class Game:
                     if event.key == rg.K_SPACE:
                         self.player.jump()
 
-            pass
+
 
         def draw(self):
             #draw screen
-            self.screen.fill(black)
+            self.screen.fill(bgColor)
             self.allObjects.draw(self.screen)
+            self.drawText(str(self.score), 22, white, width / 2, 15)
 
              #update display double buffer
             rg.display.flip()
@@ -123,18 +124,48 @@ class Game:
 
         def startScreen(self):
             #start screen
-            pass
+            self.screen.fill(bgColor)
+            self.drawText(Title, 48, white, width / 2, height / 4)
+            self.drawText("Arrows to move, spacebar to jump", 22, white, width / 2, height / 2)
+            self.drawText("hit any key to start", 22, white, width / 2, height * 3 / 4)
+            rg.display.flip()
+            self.waitForKey()
 
-        def retryScreen(self):
+        def gameOverScreen(self):
             #game over retry
-            pass
+            if not self.running:
+                return
+            self.screen.fill(bgColor)
+            self.drawText("Game Over", 48, white, width / 2, height / 4)
+            self.drawText("Score: "+ str(self.score), 22, white, width / 2, height / 2)
+            self.drawText("try again?", 22, white, width / 2, height * 3 / 4)
+            rg.display.flip()
+            self.waitForKey()
 
+        def waitForKey(self):
+            waiting = True
+            while waiting:
+                self.clock.tick(fps)
+                for event in rg.event.get():
+                    if event.type == rg.QUIT:
+                        waiting = False
+                        self.running = False
+                    if event.type == rg.KEYUP:
+                        waiting = False
+
+
+        def drawText(self, text, size, color, x, y):
+            font = rg.font.Font(self.fontName, size)
+            textSurface = font.render(text, True, color)
+            textRect = textSurface.get_rect()
+            textRect.midtop = (x,y)
+            self.screen.blit(textSurface,textRect)
 
 
 g = Game()
 g.startScreen()
 while g.running:
     g.new()
-    g.retryScreen()
+    g.gameOverScreen()
 
 rg.quit()
