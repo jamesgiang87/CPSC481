@@ -119,12 +119,15 @@ class Player(rg.sprite.Sprite):
 
     def update(self):
         self.animate()
+        self.oldPos = self.pos.x
         self.acc = vec(0, playerGrav)
         keys = rg.key.get_pressed()
         if keys[rg.K_LEFT]:
             self.acc.x = -playerAcc
+            self.oldPos = self.pos.x
         if keys[rg.K_RIGHT]:
             self.acc.x  = playerAcc
+            self.oldPos = self.pos.x
 
 
 
@@ -158,21 +161,19 @@ class Player(rg.sprite.Sprite):
         #Stuck here for trying to get player position to attack the left or right.
 ################################################################################
 
-
-
-        if self.jumping == False:
-            keys = rg.key.get_pressed()
-            if now - self.lastUpdate > 100:
-                self.lastUpdate = now
-                self.currentFrame = (self.currentFrame + 1) % len(self.attackFrameR)
-                bottom = self.rect.bottom
-                if keys[rg.K_a]:
-                    if self.pos.x > self.oldPos1:
+        keys = rg.key.get_pressed()
+        if keys[rg.K_a]:
+            if self.jumping == False:
+                if now - self.lastUpdate > 40:
+                    self.lastUpdate = now
+                    self.currentFrame = (self.currentFrame + 1) % len(self.attackFrameR)
+#                bottom = self.rect.bottom
+                    if self.pos.x > self.oldPos or self.pos.x == self.oldPos:
                         self.image = self.attackFrameR[self.currentFrame]
                     else:
                         self.image = self.attackFrameL[self.currentFrame]
                     self.rect = self.image.get_rect()
-                    self.rect.bottom = bottom
+#                    self.rect.bottom = bottom
 ################################################################################
         #walking
         if self.walking and self.jumping == False:
