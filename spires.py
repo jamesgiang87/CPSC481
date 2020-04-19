@@ -23,13 +23,16 @@ class Player(rg.sprite.Sprite):
         self.currentFrame = 0
         self.lastUpdate = 0
         self.loadImages()
-        self.image = self.idleFrame[0]
+        self.image = self.idleFrameR[0]
         self.image.set_colorkey(black)
         self.rect = self.image.get_rect()
         self.rect.center = (width / 2, height / 2)
         self.pos = vec(width / 2, height / 2)
         self.vel = vec(0,0)
         self.acc = vec(0,0)
+        self.facing = 1
+        self.attacking = False
+        self.rcopy = self.rect.copy()
 
     def loadImages(self):
 
@@ -91,7 +94,7 @@ class Player(rg.sprite.Sprite):
             frame.set_colorkey(black)
             self.attackFrameL.append(rg.transform.flip(frame, True, False))
 
-        self.idleFrame = [
+        self.idleFrameR = [
         self.game.spritesheet.getImage(590, 1507, 587,707),
         self.game.spritesheet.getImage(1179, 1507, 587,707),
         self.game.spritesheet.getImage(1768, 1507, 587,707),
@@ -102,20 +105,26 @@ class Player(rg.sprite.Sprite):
         self.game.spritesheet.getImage(4713, 1507, 587,707),
         self.game.spritesheet.getImage(5302, 1507, 587,707),
         self.game.spritesheet.getImage(1, 1507, 587,707)]
-        for frame in self.idleFrame:
+        for frame in self.idleFrameR:
             frame.set_colorkey(black)
+
+        self.idleFrameL = []
+        for frame in self.idleFrameR:
+            frame.set_colorkey(black)
+            self.idleFrameL.append(rg.transform.flip(frame, True, False))
 
     def jump(self):
         #jump on ground only
-        self.rect.x += 1
+        self.rect.y += 1
         hits = rg.sprite.spritecollide(self, self.game.platforms,False)
-        self.rect.x -= 1
+#        self.rect.x -= 1
         if hits:
             self.vel.y = -20
-        hits = rg.sprite.spritecollide(self, self.game.ground,False)
-        self.rect.x -= 1
-        if hits:
-            self.vel.y = -20
+        else:
+            hits = rg.sprite.spritecollide(self, self.game.ground,False)
+            if hits:
+                self.vel.y = -20
+        self.rect.y -= 1
 
     def update(self):
         self.animate()
@@ -125,9 +134,11 @@ class Player(rg.sprite.Sprite):
         if keys[rg.K_LEFT]:
             self.acc.x = -playerAcc
             self.oldPos = self.pos.x
+            self.facing = -1
         if keys[rg.K_RIGHT]:
             self.acc.x  = playerAcc
             self.oldPos = self.pos.x
+            self.facing = 1
 
 
 
@@ -136,13 +147,65 @@ class Player(rg.sprite.Sprite):
         self.vel += self.acc
         if abs(self.vel.x) < 0.1:
             self.vel.x = 0
-        self.pos += self.vel + 0.5 * self.acc
-        #end of screen
-        if self.pos.x > width:
-            self.pos.x = 0
-        if self.pos.x < 0:
-            self.pos.x = 0
         self.rect.midbottom = self.pos
+        self.rcopy = self.rect.copy()
+        hit = False
+#        for p in self.game.platforms:
+#            if self.rcopy.colliderect(p.rect):
+#                hit = True
+        if not hit:
+            self.rcopy.x += self.vel.x + 0.5 * self.acc.x
+            for p in self.game.platforms:
+                if self.rcopy.colliderect(p.rect):
+                    hit = True
+                    if 0 > self.vel.x + 0.5 * self.acc.x:
+                        self.rcopy.left = p.rect.right
+                    else:
+                        self.rcopy.right = p.rect.left
+            for p in self.game.ground:
+                if self.rcopy.colliderect(p.rect):
+                    hit = True
+                    if 0 > self.vel.x + 0.5 * self.acc.x:
+                        self.rcopy.left = p.rect.right
+                    else:
+                        self.rcopy.right = p.rect.left
+            if hit:
+                self.vel.x = 0
+                self.acc.x = 0
+            hit = False
+            self.rcopy.y += self.vel.y + 0.5 * self.acc.y
+            for p in self.game.platforms:
+                if self.rcopy.colliderect(p.rect):
+                    hit = True
+                    if 0 > self.vel.y + 0.5 * self.acc.y:
+                        self.rcopy.top = p.rect.bottom
+                    else:
+                        self.rcopy.bottom = p.rect.top
+            for p in self.game.ground:
+                if self.rcopy.colliderect(p.rect):
+                    hit = True
+                    if 0 > self.vel.y + 0.5 * self.acc.y:
+                        self.rcopy.top = p.rect.bottom
+                    else:
+                        self.rcopy.bottom = p.rect.top
+            if hit:
+                self.vel.y = 0
+                self.acc.y = 0
+
+        #+= self.vel + 0.5 * self.acc
+
+        #end of screen
+#        if self.pos.x > width:
+#            self.pos.x = 0
+#        if self.pos.x < 0:
+#            self.pos.x = 0
+        self.game.offset += self.rcopy.x - (self.rect.x)
+#        self.pos.x = (self.game.screen.get_width() / 2)
+#        self.pos.x = self.rcopy.midbottom[0]
+        self.pos.y = self.rcopy.midbottom[1]
+
+        self.rect.y = self.rcopy.y #        self.rect.midbottom = self.pos
+
 
     def animate(self):
         now = rg.time.get_ticks()
@@ -165,25 +228,32 @@ class Player(rg.sprite.Sprite):
 
         keys = rg.key.get_pressed()
         if keys[rg.K_a]:
-            if self.jumping == False:
-                if now - self.lastUpdate > 40:
-                    self.lastUpdate = now
-                    self.currentFrame = (self.currentFrame + 1) % len(self.attackFrameR)
+            if not self.jumping:
+                self.attacking = True
+        if self.attacking:
+            if now - self.lastUpdate > 40:
+                self.lastUpdate = now
+                self.currentFrame = (self.currentFrame + 1)
+                if self.currentFrame % len(self.attackFrameR) < self.currentFrame:
+                    self.currentFrame = self.currentFrame % len(self.attackFrameR)
+                    self.attacking = False
 #                bottom = self.rect.bottom
-                    if self.pos.x > self.oldPos or self.pos.x == self.oldPos:
-                        self.image = self.attackFrameR[self.currentFrame]
-                    else:
-                        self.image = self.attackFrameL[self.currentFrame]
-                    self.rect = self.image.get_rect()
-#                    self.rect.bottom = bottom
+                if self.facing == 1:
+                    self.image = self.attackFrameR[self.currentFrame]
+                else:
+                    self.image = self.attackFrameL[self.currentFrame]
+                self.rect = self.image.get_rect()
+#                self.rect.bottom = bottom
 ################################################################################
+        if self.attacking:
+            pass
         #walking
-        if self.walking and self.jumping == False:
+        elif self.walking and not self.jumping:
             if now - self.lastUpdate > 125:
                 self.lastUpdate = now
                 self.currentFrame = (self.currentFrame + 1) % len(self.walkingFrameR)
                 bottom = self.rect.bottom
-                if self.vel.x > 0:
+                if self.facing == 1:
                     self.image = self.walkingFrameR[self.currentFrame]
                 else:
                     self.image = self.walkingFrameL[self.currentFrame]
@@ -192,23 +262,26 @@ class Player(rg.sprite.Sprite):
 
         #idle
 
-        if not self.jumping and not self.walking:
+        elif not self.jumping and not self.walking:
             if now - self.lastUpdate > 125:
                 self.lastUpdate = now
-                self.current_frame = (self.currentFrame + 1) % len(self.idleFrame)
+                self.current_frame = (self.currentFrame + 1) % len(self.idleFrameR)
                 bottom = self.rect.bottom
-                self.image = self.idleFrame[self.currentFrame]
+                if self.facing == 1:
+                    self.image = self.idleFrameR[self.currentFrame]
+                else:
+                    self.image = self.idleFrameL[self.currentFrame]
                 self.rect = self.image.get_rect()
                 self.rect.bottom = bottom
 
         #jumping
-        if self.jumping:
+        elif self.jumping:
             self.walking = False
             if now - self.lastUpdate > 125:
                 self.lastUpdate = now
                 self.currentFrame = (self.currentFrame + 1) % len(self.walkingFrameR)
                 bottom = self.rect.bottom
-                if self.vel.x > 0:
+                if self.facing == 1:
                     self.image = self.jumpingFrameR[self.currentFrame]
                 else:
                     self.image = self.jumpingFrameL[self.currentFrame]
@@ -347,19 +420,38 @@ class Enemy(rg.sprite.Sprite):
                 '''
 
 class Ground(rg.sprite.Sprite):
-    def __init__ (self, x, y, w, h):
-        rg.sprite.Sprite.__init__(self)
+    def __init__ (self, game, x, y, w, h):
+        super().__init__()
+        self.game = game
         self.image = rg.Surface((w,h))
         self.image.fill(lime)
+        self.pos = vec(x, y)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+'''
+    def draw(self, screen):
+        self.rect.x = self.pos.x - self.game.offset
+        super().draw(screen)
+
+    def update(self, *args):
+        self.rect.x = self.pos.x - self.game.offset
+'''
+
+class Platform(rg.sprite.Sprite):
+    def __init__ (self, game, x, y, w, h):
+        super().__init__()
+        self.game = game
+        self.image = rg.Surface((w,h))
+        self.image.fill(white)
+        self.pos = vec(x,y)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
 
-class Platform(rg.sprite.Sprite):
-    def __init__ (self, x, y, w, h):
-        rg.sprite.Sprite.__init__(self)
-        self.image = rg.Surface((w,h))
-        self.image.fill(white)
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
+    def draw(self, screen):
+        self.rect.x = self.pos.x - self.game.offset
+        super().draw(screen)
+
+    def update(self, *args):
+        self.rect.x = self.pos.x - self.game.offset
