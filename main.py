@@ -19,6 +19,8 @@ class Game:
             self.running = True
             self.fontName = rg.font.match_font(fontType)
             self.loadData()
+            self.offset = width / 2
+            self.future_plat = 0
 
         def loadData(self):
             self.dir = path.dirname(__file__)
@@ -39,11 +41,11 @@ class Game:
             self.ground = rg.sprite.Group()
             self.allObjects.add(self.ground)
             for floor in floorList:
-                f = Ground(*floor)
+                f = Ground(self, *floor)
                 self.allObjects.add(f)
                 self.ground.add(f)
             for plat in platformList:
-                p = Platform(*plat)
+                p = Platform(self, *plat)
                 self.allObjects.add(p)
                 self.platforms.add(p)
             self.run()
@@ -86,12 +88,16 @@ class Game:
                         print('kill')
 
             # spawn new platformList
-            while len(self.platforms) < 5:
+            self.future_plat = 0
+            for p in self.platforms:
+                if p.rect.right > self.player.pos.x:
+                    self.future_plat += 1
+            while self.future_plat < 5:
                 newWidthSize = random.randrange(100, 200)
-                p = Platform(random.randrange( 300, height - 40),
-                random.randrange(0, width ), newWidthSize, 20)
+                p = Platform(self, self.offset + random.randrange( width, 2 * width), random.randrange(height / 4, 3 * height / 4 ), newWidthSize, 20)
                 self.platforms.add(p)
                 self.allObjects.add(p)
+                self.future_plat += 1
                 print('add plat')
 
             #player dead
@@ -117,6 +123,7 @@ class Game:
             self.screen.fill(bgColor)
             self.allObjects.draw(self.screen)
             self.drawText(str(self.score), 22, white, width / 2, 15)
+            self.drawText(str(self.offset), 22, white, width / 2, 40)
 
              #update display double buffer
             rg.display.flip()
