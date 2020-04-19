@@ -115,16 +115,17 @@ class Player(rg.sprite.Sprite):
 
     def jump(self):
         #jump on ground only
-        self.rect.y += 1
-        hits = rg.sprite.spritecollide(self, self.game.platforms,False)
-#        self.rect.x -= 1
-        if hits:
-            self.vel.y = -20
-        else:
-            hits = rg.sprite.spritecollide(self, self.game.ground,False)
+        if not self.attacking:
+            self.rect.y += 1
+            hits = rg.sprite.spritecollide(self, self.game.platforms,False)
+    #        self.rect.x -= 1
             if hits:
                 self.vel.y = -20
-        self.rect.y -= 1
+            else:
+                hits = rg.sprite.spritecollide(self, self.game.ground,False)
+                if hits:
+                    self.vel.y = -20
+            self.rect.y -= 1
 
     def update(self):
         self.animate()
