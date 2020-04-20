@@ -1,6 +1,12 @@
 import pygame as rg
 from setting import *
+from random import choice, randrange
 vec = rg.math.Vector2
+
+
+
+playerResizeX = 75
+playerResizeY = 30
 
 class SpriteSheet:
     def __init__(self, filename):
@@ -37,16 +43,16 @@ class Player(rg.sprite.Sprite):
     def loadImages(self):
 
         self.walkingFrameR = [
-        self.game.spritesheet.getImage(1179, 3634, 587,707),
-        self.game.spritesheet.getImage(1768, 3634, 587,707),
-        self.game.spritesheet.getImage(2357, 3634, 587,707),
-        self.game.spritesheet.getImage(2946, 3634, 587,707),
-        self.game.spritesheet.getImage(3535, 3634, 587,707),
-        self.game.spritesheet.getImage(4124, 3634, 587,707),
-        self.game.spritesheet.getImage(4713, 3634, 587,707),
-        self.game.spritesheet.getImage(5302, 3634, 587,707),
-        self.game.spritesheet.getImage(5891, 3634, 587,707),
-        self.game.spritesheet.getImage(590, 3634, 587,707)]
+        self.game.spritesheet.getImage(1179 - playerResizeX, 3634 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(1768 - playerResizeX, 3634 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(2357 - playerResizeX, 3634 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(2946 - playerResizeX, 3634 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(3535 - playerResizeX, 3634 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(4124 - playerResizeX, 3634 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(4713 - playerResizeX, 3634 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(5302 - playerResizeX, 3634 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(5891 - playerResizeX, 3634 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(590 - playerResizeX, 3634 - playerResizeY, 587,707)]
         for frame in self.walkingFrameR:
             frame.set_colorkey(black)
 
@@ -57,16 +63,16 @@ class Player(rg.sprite.Sprite):
 
 
         self.jumpingFrameR =[
-        self.game.spritesheet.getImage(6480, 1507, 587,707),
-        self.game.spritesheet.getImage(7069, 1507, 587,707),
-        self.game.spritesheet.getImage(1, 2216, 587,707),
-        self.game.spritesheet.getImage(590, 2216, 587,707),
-        self.game.spritesheet.getImage(1179, 2216, 587,707),
-        self.game.spritesheet.getImage(1768, 2216, 587,707),
-        self.game.spritesheet.getImage(2357, 2216, 587,707),
-        self.game.spritesheet.getImage(2946, 2216, 587,707),
-        self.game.spritesheet.getImage(3535, 2216, 587,707),
-        self.game.spritesheet.getImage(5891, 1507, 587,707)]
+        self.game.spritesheet.getImage(6480 - playerResizeX, 1507 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(7069 - playerResizeX, 1507 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(1 - playerResizeX, 2216 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(590 - playerResizeX, 2216 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(1179 - playerResizeX, 2216 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(1768 - playerResizeX, 2216 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(2357 - playerResizeX, 2216 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(2946 - playerResizeX, 2216 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(3535 - playerResizeX, 2216 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(5891 - playerResizeX, 1507 - playerResizeY, 587,707)]
         for frame in self.jumpingFrameR:
             frame.set_colorkey(black)
 
@@ -76,16 +82,16 @@ class Player(rg.sprite.Sprite):
             self.jumpingFrameL.append(rg.transform.flip(frame, True, False))
 
         self.attackFrameR =[
-        self.game.spritesheet.getImage(590, 1, 587,707),
-        self.game.spritesheet.getImage(1179, 1, 587,707),
-        self.game.spritesheet.getImage(1768, 1, 587,707),
-        self.game.spritesheet.getImage(2357, 1, 587,707),
-        self.game.spritesheet.getImage(2946, 1, 587,707),
-        self.game.spritesheet.getImage(3535, 1, 587,707),
-        self.game.spritesheet.getImage(4124, 1, 587,707),
-        self.game.spritesheet.getImage(4713, 1, 587,707),
-        self.game.spritesheet.getImage(5302, 1, 587,707),
-        self.game.spritesheet.getImage(1, 1, 587,707)]
+        self.game.spritesheet.getImage(590 - playerResizeX, 1 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(1179 - playerResizeX, 1 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(1768 - playerResizeX, 1 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(2357 - playerResizeX, 1 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(2946 - playerResizeX, 1 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(3535 - playerResizeX, 1 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(4124 - playerResizeX, 1 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(4713 - playerResizeX, 1 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(5302 - playerResizeX, 1 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(1 - playerResizeX, 1 - playerResizeY, 587,707)]
         for frame in self.attackFrameR:
             frame.set_colorkey(black)
 
@@ -95,16 +101,16 @@ class Player(rg.sprite.Sprite):
             self.attackFrameL.append(rg.transform.flip(frame, True, False))
 
         self.idleFrameR = [
-        self.game.spritesheet.getImage(590, 1507, 587,707),
-        self.game.spritesheet.getImage(1179, 1507, 587,707),
-        self.game.spritesheet.getImage(1768, 1507, 587,707),
-        self.game.spritesheet.getImage(2357, 1507, 587,707),
-        self.game.spritesheet.getImage(2946, 1507, 587,707),
-        self.game.spritesheet.getImage(3535, 1507, 587,707),
-        self.game.spritesheet.getImage(4124, 1507, 587,707),
-        self.game.spritesheet.getImage(4713, 1507, 587,707),
-        self.game.spritesheet.getImage(5302, 1507, 587,707),
-        self.game.spritesheet.getImage(1, 1507, 587,707)]
+        self.game.spritesheet.getImage(590 - playerResizeX, 1507 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(1179 - playerResizeX, 1507 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(1768 - playerResizeX, 1507 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(2357 - playerResizeX, 1507 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(2946 - playerResizeX, 1507 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(3535 - playerResizeX, 1507 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(4124 - playerResizeX, 1507 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(4713 - playerResizeX, 1507 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(5302 - playerResizeX, 1507 - playerResizeY, 587,707),
+        self.game.spritesheet.getImage(1 - playerResizeX, 1507 - playerResizeY, 587,707)]
         for frame in self.idleFrameR:
             frame.set_colorkey(black)
 
@@ -290,22 +296,28 @@ class Player(rg.sprite.Sprite):
                 self.rect.bottom = bottom
 
 class Enemy(rg.sprite.Sprite):
-    pass
-    '''
     def __init__(self, game):
+        self.group = game.allObjects, game.enemies
         rg.sprite.Sprite.__init__(self)
         self.game = game
         self.walking = False
         self.jumping = False
         self.attacking = False
+        self.leftFacing = False
+        self.rightFacing = False
         self.currentFrame = 0
         self.lastUpdate = 0
         self.loadImages()
         self.image = self.idleFrame[0]
         self.image.set_colorkey(black)
         self.rect = self.image.get_rect()
-        self.rect.center = (width / 2, height / 2)
-        self.pos = vec(width / 2, height / 2)
+        self.rect.centerx = choice([1000, 2000])
+        self.vx = randrange(1,8)
+        self.rect.x = 1000
+        self.rect.y = 2000
+        self.vx = 100
+        self.dx = 0.1
+        #self.pos = vec(self.rect.x, self.rect.y)
         self.vel = vec(0,0)
         self.acc = vec(0,0)
 
@@ -363,25 +375,24 @@ class Enemy(rg.sprite.Sprite):
 
     def update(self):
         self.animate()
-        self.acc = vec(0, playerGrav)
-        keys = rg.key.get_pressed()
-        if keys[rg.K_LEFT]:
-            self.acc.x = -playerAcc
-        if keys[rg.K_RIGHT]:
-            self.acc.x  = playerAcc
 
-        #fraction
-        self.acc.x += self.vel.x * enemyFrict
-        self.vel += self.acc
-        if abs(self.vel.x) < 0.1:
-            self.vel.x = 0
-        self.pos += self.vel + 0.5 * self.acc
-        #end of screen
-        if self.pos.x > width:
-            self.pos.x = 0
-        if self.pos.x < 0:
-            self.pos.x = 0
-        self.rect.midbottom = self.pos
+        if self.vx < width:
+            self.rect.x += self.vx
+
+        center = self.rect.center
+
+
+        if self.dx < 0:
+            self.jumping = True
+        else:
+            self.jumping = False
+        self.rect = self.image.get_rect()
+        #self.rect.center = center
+        #self.rect.x += self.vx
+        if self.rect.left > width + 100 or self.rect.right < -100:
+            self.kill
+
+
 
     def animate(self):
         now = rg.time.get_ticks()
@@ -418,7 +429,7 @@ class Enemy(rg.sprite.Sprite):
                 self.image = self.idleFrame[self.currentFrame]
                 self.rect = self.image.get_rect()
                 self.rect.bottom = bottom
-                '''
+
 
 class Ground(rg.sprite.Sprite):
     def __init__ (self, game, x, y, w, h):
@@ -430,14 +441,6 @@ class Ground(rg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-'''
-    def draw(self, screen):
-        self.rect.x = self.pos.x - self.game.offset
-        super().draw(screen)
-
-    def update(self, *args):
-        self.rect.x = self.pos.x - self.game.offset
-'''
 
 class Platform(rg.sprite.Sprite):
     def __init__ (self, game, x, y, w, h):

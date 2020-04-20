@@ -21,7 +21,7 @@ playerGrav = 0.8
 enemyAcc = 2
 enemyFrict = -0.12
 enemyGrav = 0.8
-
+enemyFreq = 5000
 
 #platforms in a list
 platformList = range(4)

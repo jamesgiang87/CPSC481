@@ -4,6 +4,7 @@ import random
 import os
 from setting import *
 from spires import *
+from random import choice, randrange
 from os import path
 
 
@@ -36,8 +37,8 @@ class Game:
             self.platforms = rg.sprite.Group()
             self.player = Player(self)
             self.allObjects.add(self.player)
-            self.enemy = rg.sprite.Group()
-            #self.allObjects.add(self.enemy)
+            self.enemies = rg.sprite.Group()
+            self.allObjects.add(self.enemies)
             self.ground = rg.sprite.Group()
             self.allObjects.add(self.ground)
             for floor in floorList:
@@ -48,6 +49,7 @@ class Game:
                 p = Platform(self, *plat)
                 self.allObjects.add(p)
                 self.platforms.add(p)
+            self.enemyTimer = 0
             self.run()
 
         def run(self):
@@ -71,12 +73,14 @@ class Game:
                     self.player.pos.y = hits[0].rect.top
                     self.player.vel.y = 0
 
+
             #check if player is falling onto platform
             if self.player.vel.y > 0:
                 hits = rg.sprite.spritecollide(self.player,self.platforms,False)
                 if hits:
                     self.player.pos.y = hits[0].rect.top
                     self.player.vel.y = 0
+
 
             #if player is edge of the screen remove platform
             if self.player.rect.right > width:
@@ -102,6 +106,18 @@ class Game:
 
             #player dead
             if self.player.rect.bottom > height:
+                self.playing = False
+
+        # spawn a enemies?
+            now = rg.time.get_ticks()
+            if now - self.enemyTimer > 5000 + random.choice([-1000, -500, 0, 500, 1000]):
+                self.enemyTimer = now
+                e = Enemy(self)
+                self.allObjects.add(e)
+                print('add enemy')
+            # hit enemies
+            enemyHits = rg.sprite.spritecollide(self.player, self.enemies, False)
+            if enemyHits:
                 self.playing = False
 
         def events(self):
