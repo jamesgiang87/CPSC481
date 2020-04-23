@@ -67,19 +67,19 @@ class Game:
             self.allObjects.update()
 
             #chech if player is on ground
-            if self.player.vel.y > 0:
-                hits = rg.sprite.spritecollide(self.player,self.ground,False)
-                if hits:
-                    self.player.pos.y = hits[0].rect.top
-                    self.player.vel.y = 0
+#            if self.player.vel.y > 0:
+#                hits = rg.sprite.spritecollide(self.player,self.ground,False)
+#                if hits:
+#                    self.player.pos.y = hits[0].rect.top
+#                    self.player.vel.y = 0
 
 
             #check if player is falling onto platform
-            if self.player.vel.y > 0:
-                hits = rg.sprite.spritecollide(self.player,self.platforms,False)
-                if hits:
-                    self.player.pos.y = hits[0].rect.top
-                    self.player.vel.y = 0
+#            if self.player.vel.y > 0:
+#                hits = rg.sprite.spritecollide(self.player,self.platforms,False)
+#                if hits:
+#                    self.player.pos.y = hits[0].rect.top
+#                    self.player.vel.y = 0
 
 
             #if player is edge of the screen remove platform
@@ -112,12 +112,18 @@ class Game:
             now = rg.time.get_ticks()
             if now - self.enemyTimer > 5000 + random.choice([-1000, -500, 0, 500, 1000]):
                 self.enemyTimer = now
-                e = Enemy(self)
+                e = Enemy(self, self.offset + width - 1, height - 50)
                 self.allObjects.add(e)
+                self.enemies.add(e)
                 print('add enemy')
             # hit enemies
-            enemyHits = rg.sprite.spritecollide(self.player, self.enemies, False)
-            if enemyHits:
+            a = False
+            if self.player.attacking:
+                f = self.player.currentFrame / len(self.player.attackFrameL)
+                if f >= 0.2 and f <= 0.8:
+                    a = True
+            enemyHits = rg.sprite.spritecollide(self.player, self.enemies, a)
+            if not a and enemyHits:
                 self.playing = False
 
         def events(self):
