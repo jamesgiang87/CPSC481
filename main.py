@@ -321,35 +321,26 @@ class Game:
 
 
 def run(config_file, game):
-    """
-    runs the NEAT algorithm to train a neural network to play flappy bird.
-    :param config_file: location of config file
-    :return: None
-    """
     config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction,
                          neat.DefaultSpeciesSet, neat.DefaultStagnation,
                          config_file)
 
-    # Create the population, which is the top-level object for a NEAT run.
+    # Create the population
     p = neat.Population(config)
 
     # Add a stdout reporter to show progress in the terminal.
     p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
-    #p.add_reporter(neat.Checkpointer(5))
 
     # Run for up to 50 generations.
     winner = p.run(g.new, 50) # eval_genomes, 50)
 
-    # show final stats
+    # Return final AI
     return winner
 
 
 if __name__ == '__main__':
-    # Determine path to configuration file. This path manipulation is
-    # here so that the script will run successfully regardless of the
-    # current working directory.
     local_dir = os.path.dirname(__file__)
     config_path = os.path.join(local_dir, 'config-feedforward.txt')
     g = Game()
@@ -357,97 +348,3 @@ if __name__ == '__main__':
     winner = run(config_path, g)
     g.gameOverScreen(winner)
     rg.quit()
-=======
-#importing libraries
-import pygame as rg
-import random
-import os
-from setting import *
-from spires import *
-from platforms import *
-
-
-class Game:
-        def __init__(self):
-            #init pygame and game window
-            rg.init()
-            rg.mixer.init()
-            self.screen = rg.display.set_mode((width,height))
-            rg.display.set_caption("game")
-            self.clock = rg.time.Clock()
-            self.running = True
-
-        def new(self):
-            self.allObjects = rg.sprite.Group()
-            self.platforms = rg.sprite.Group()
-            self.player = Player(self)
-            self.allObjects.add(self.player)
-            self.enemy = Enemy(self)
-            self.allObjects.add(self.enemy)
-            self.ground = rg.sprite.Group()
-            self.allObjects.add(self.ground)
-            for floor in floorList:
-                f = Ground(*floor)
-                self.allObjects.add(f)
-                self.ground.add(f)
-            for plat in platformList:
-                p = Platform(*plat)
-                self.allObjects.add(p)
-                self.platforms.add(p)
-            self.run()
-
-        def run(self):
-            #game loop
-            self.playing = True
-            while self.playing:
-                self.clock.tick(fps)
-                self.events()
-                self.update()
-                self.draw()
-
-        def update(self):
-            #update game
-            self.allObjects.update()
-
-            pass
-
-        def events(self):
-            #events
-            for event in rg.event.get():
-                #check if exit
-                if event.type == rg.QUIT:
-                    if self.playing:
-                        self.playing = False
-                    self.running = False
-
-            pass
-
-        def draw(self):
-            #draw screen
-            self.screen.fill(black)
-            self.allObjects.draw(self.screen)
-
-             #update display double buffer
-            rg.display.flip()
-
-
-        def startScreen(self):
-            #start screen
-            pass
-
-        def retryScreen(self):
-            #game over retry
-            pass
-
-        def addwall(self, wall):
-            self.allObjects.add(wall)
-            self.walls.add(wall)
-
-g = Game()
-g.startScreen()
-while g.running:
-    g.new()
-    g.retryScreen()
-
-rg.quit()
-
