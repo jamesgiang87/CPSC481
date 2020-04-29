@@ -1,7 +1,7 @@
 import pygame as rg
 from pygame.sprite import Sprite
 from setting import *
-from vector import Vector as vec
+from vectory import Vector as vec
 
 
 class Wall(Sprite):
@@ -16,4 +16,3 @@ class Wall(Sprite):
 
     def update(self):
         pass
-
