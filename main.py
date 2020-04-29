@@ -270,10 +270,9 @@ class Game:
             self.drawText('Score: {!s}'.format(self.offset), 22, white, width / 2, 15)  # 40
             self.drawText('Generation: {!s}'.format(self.gen), 22, white, width / 2, 40)  # 40
             self.drawText('Knights: {!s}'.format(len(self.player)), 22, white, width / 2, 65)  # 40
-
-            self.drawText('Score: {!s}'.format(self.offset), 22, white, width / 2, 15)  # 40
-            self.drawText('Generation: {!s}'.format(self.gen), 22, white, width / 2, 40)  # 40
-
+                
+            self.drawText('Best so far: {!s}'.format(self.best), 22, white, width / 4, 15)  # 40
+            self.drawText('Prior Gen: {!s}'.format(self.lastbest), 22, white, width / 4, 40)  # 40
              #update display double buffer
             rg.display.flip()
 
@@ -320,11 +319,6 @@ class Game:
 
 
 def run(config_file, game):
-    """
-    runs the NEAT algorithm to train a neural network to play flappy bird.
-    :param config_file: location of config file
-    :return: None
-    """
     config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction,
                          neat.DefaultSpeciesSet, neat.DefaultStagnation,
                          config_file)
@@ -341,14 +335,11 @@ def run(config_file, game):
     # Run for up to 50 generations.
     winner = p.run(g.new, 50) # eval_genomes, 50)
 
-    # show final stats
+    # return final AI
     return winner
 
 
 if __name__ == '__main__':
-    # Determine path to configuration file. This path manipulation is
-    # here so that the script will run successfully regardless of the
-    # current working directory.
     local_dir = os.path.dirname(__file__)
     config_path = os.path.join(local_dir, 'config-feedforward.txt')
     g = Game()
